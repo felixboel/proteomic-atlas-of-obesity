@@ -37,7 +37,7 @@ You can access the hosted application here: https://felixboel.shinyapps.io/prote
 
 Ensure the following R packages are available:
 ```r
-install.packages(c("shiny", "shinymanager", "shinyTree", "ggplot2", "plotly", "dplyr", "tidyr", "readr"))
+install.packages(c("shiny", "shinyTree", "ggplot2", "plotly", "dplyr", "tidyr", "readr"))
 ```
 To launch the app:
 ```r
