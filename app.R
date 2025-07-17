@@ -1,5 +1,5 @@
 # List of required packages
-packages <- c("shiny", "shinymanager", "shinyTree", "ggplot2", "plotly", "dplyr", "tidyr", "readr")
+packages <- c("shiny", "shinyTree", "ggplot2", "plotly", "dplyr", "tidyr", "readr")
 
 # Install any missing packages
 install_if_missing <- function(pkg) {
