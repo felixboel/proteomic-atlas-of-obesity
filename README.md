@@ -12,7 +12,7 @@ You can access the hosted application here: https://felixboel.shinyapps.io/prote
 
 ## Repository Contents
 
-- **`app_launcher.R`**
+- **`app.R`**
   - **Function:** Launches the Shiny application locally.
   - **Description:** Installs missing R package dependencies, sources the main application logic, and starts the app.
 
