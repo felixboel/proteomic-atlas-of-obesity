@@ -43,6 +43,7 @@ To launch the app:
 ```r
 source("app.R")
 ```
+The app should launch 5-10 seconds on a standard desktop. The app has been tested on R, version 4.2.3 and 4.3.1
 
 
 ## Citation
