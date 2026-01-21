@@ -1,0 +1,16 @@
+# macOS junk
+.DS_Store
+__MACOSX/
+
+# R junk
+.Rhistory
+.RData
+.Rproj.user/
+
+# data (pre-publication)
+data/raw/
+data/processed/
+
+# renv local library
+renv/library/
+renv/staging/
