@@ -1,52 +1,92 @@
-# Multi-Tissue Proteomic Atlas of Obesity Regression in Mice
+# Proteomic Atlas of Obesity (Shiny webtool)
 
-**Boel et al.**
+Interactive Shiny web application accompanying the study **“Multi-organ proteomic atlas of obesity regression in male mice”** (Boel et al.).
 
+The tool enables exploration of tissue- and time-specific proteomic shifts across mouse organs during obesity and its regression.
 
-## Overview
+---
 
-This repository contains the code for the interactive Shiny webtool accompanying the study “Multi-tissue proteomic atlas of obesity regression in mice” by Boel et al. The tool enables users to explore system-wide proteomic changes across 15 mouse tissues during obesity and its regression, integrating Reactome pathway data with differential expression metrics. 
+## Hosted application
 
-You can access the hosted application here: https://felixboel.shinyapps.io/proteomic-atlas-of-obesity/ 
+- **Public instance:** *TBD*
 
+---
 
-## Repository Contents
+## Repository contents
 
-- **`app.R`**
-  - **Function:** Launches the Shiny application locally.
-  - **Description:** Installs missing R package dependencies, sources the main application logic, and starts the app.
+- `app/` — Shiny application  
+  - `app/app.R` — app entry point  
+  - `app/R/` — helper scripts (`config.R`, `data_load.R`, `helpers.R`)  
+  - `app/www/` — static assets (CSS, fonts)
+- `Dockerfile` — container build for deployment
+- `renv.lock`, `renv/` — pinned R package versions for reproducibility
+- `data/` — placeholder for processed data (not included during embargo)
 
-- **`sub_folder/proteomics_explorer.R`**
-  - **Function:** Function: Defines the UI and server logic for the Shiny app.
-  - **Description:** Implements data loading, tree-based pathway navigation, interactive bubble plots, and pathway selection. Allows users to visualize differential protein regulation across tissues and timepoints.
+---
 
-- **`sub_folder/*.txt (data files will be uploaded upon publication)`**
-  - **UniProt2Reactome_All_Levels.txt:** Maps proteins to Reactome pathways.
-  - **ReactomePathways.txt:** Pathway metadata.
-  - **ReactomePathwaysRelation.txt:** Defines the hierarchical structure of Reactome pathways.
-  - **combined_all.txt:** Differential expression data across tissues and timepoints.
-  
-## Webtool Features
-  - **Pathway-based exploration:** Navigate Reactome’s pathway hierarchy via an interactive tree.
-  - **Tissue & timepoint context:** View protein-level changes across 4 timepoints (Ob, STR, MTR, LTR) in 15 tissues.
-  - **Bubble plots:** Visualize the count and direction (Up/Down) of regulated proteins for any selected pathway..
-  - **Custom filtering:** Set cutoffs for adjusted p-values and log fold-changes to refine the analysis..
+## Webtool features
 
+### Pathway viewer
+- Navigate Reactome pathway hierarchy using an interactive pathway tree.
+- Bubble plot summarizing regulated proteins across organs and timepoints.
+- Adjustable filtering by BH-adjusted p-value cutoff and log fold-change cutoff.
 
-## Installation & Running Locally
+### Gene viewer
+- Query one or more gene symbols (one per line).
+- Organ selection interface with color-coded organ toggles.
+- Multi-panel interactive plots showing gene-level changes across selected organs.
 
-Ensure the following R packages are available:
+### General
+- Interactive Plotly visualizations (zoom, hover tooltips, export).
+- Consistent organ color palette across all views.
+
+---
+
+## Data availability
+
+Processed data files are **not included in this repository during peer review**.
+
+Upon publication, processed data will be made publicly available via PRIDE (accession: PXD066875), and this repository will be updated accordingly.
+
+---
+
+## Running locally
+
+### 1) Restore packages using renv
+From R:
+
 ```r
-install.packages(c("shiny", "shinyTree", "ggplot2", "plotly", "dplyr", "tidyr", "readr"))
+renv::restore()
 ```
-To launch the app:
-```r
-source("app.R")
-```
-The app should launch 5-10 seconds on a standard desktop. The app has been tested on R, version 4.2.3 and 4.3.1
 
+### 2) Run the Shiny app
+```r
+shiny::runApp("app")
+```
+Requires the processed data files in data/processed/ (see Data availability above).
+
+---
+
+## Running locally
+Build image
+```bash
+docker build -t proteomic-atlas-of-obesity .
+```
+Run container:
+```bash
+docker run --rm -p 3838:3838 proteomic-atlas-of-obesity
+```
+Requires the processed data files in data/processed/ (see Data availability above).
+
+---
 
 ## Citation
+If you use this webtool or the underlying dataset, please cite:
 
-If you use this webtool or underlying datasets in your research, please cite our publication:
-**Boel, et al. Multi-tissue proteomic atlas of obesity regression in mice**
+Boel F., et al. Multi-organ proteomic atlas of obesity regression in male mice. (Journal, Year) — DOI: TBD
+
+
+
+
+
+
