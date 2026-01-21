@@ -1,4 +1,4 @@
-# Proteomic Atlas of Obesity (Shiny webtool)
+# Proteomic Atlas of Obesity
 
 Interactive Shiny web application accompanying the study **“Multi-organ proteomic atlas of obesity regression in male mice”** (Boel et al.).
 
@@ -67,7 +67,7 @@ Requires the processed data files in data/processed/ (see Data availability abov
 
 ---
 
-## Running locally
+## Docker
 Build image
 ```bash
 docker build -t proteomic-atlas-of-obesity .
