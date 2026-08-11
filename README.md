@@ -4,7 +4,7 @@ Interactive R Shiny web application for exploring tissue- and time-specific prot
 
 The application provides interactive exploration of the multi-organ proteomic atlas described in:
 
-**Boel, F. et al.** *Multi-organ proteomic atlas of obesity regression in male mice.* **Nature Metabolism** (2026).  
+Boel, F. et al. Multi-organ proteomic atlas of obesity regression in male mice. Nature Metabolism (2026).  
 https://doi.org/10.1038/s42255-026-01599-5
 
 ---
