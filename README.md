@@ -1,92 +1,118 @@
 # Proteomic Atlas of Obesity
 
-Interactive Shiny web application accompanying the study **“Multi-organ proteomic atlas of obesity regression in male mice”** (Boel et al.).
+Interactive R Shiny web application for exploring tissue- and time-specific proteomic changes during obesity and weight-loss regression in male mice.
 
-The tool enables exploration of tissue- and time-specific proteomic shifts across mouse organs during obesity and its regression.
+The application provides interactive exploration of the multi-organ proteomic atlas described in:
+
+**Boel, F. et al.** *Multi-organ proteomic atlas of obesity regression in male mice.* **Nature Metabolism** (2026).  
+https://doi.org/10.1038/s42255-026-01599-5
 
 ---
 
 ## Hosted application
 
-- **Public instance:** *TBD*
-
----
-
-## Repository contents
-
-- `app/` — Shiny application  
-  - `app/app.R` — app entry point  
-  - `app/R/` — helper scripts (`config.R`, `data_load.R`, `helpers.R`)  
-  - `app/www/` — static assets (CSS, fonts)
-- `Dockerfile` — container build for deployment
-- `renv.lock`, `renv/` — pinned R package versions for reproducibility
-- `data/` — placeholder for processed data (not included during embargo)
-
----
-
-## Webtool features
-
-### Pathway viewer
-- Navigate Reactome pathway hierarchy using an interactive pathway tree.
-- Bubble plot summarizing regulated proteins across organs and timepoints.
-- Adjustable filtering by BH-adjusted p-value cutoff and log fold-change cutoff.
-
-### Gene viewer
-- Query one or more gene symbols (one per line).
-- Organ selection interface with color-coded organ toggles.
-- Multi-panel interactive plots showing gene-level changes across selected organs.
-
-### General
-- Interactive Plotly visualizations (zoom, hover tooltips, export).
-- Consistent organ color palette across all views.
+https://computproteomics.bmb.sdu.dk/app_direct/obesity-atlas/
 
 ---
 
 ## Data availability
 
-Processed data files are **not included in this repository during peer review**.
+Raw mass spectrometry proteomics data are available through the PRIDE repository under accession:
 
-Upon publication, processed data will be made publicly available via PRIDE (accession: PXD066875), and this repository will be updated accordingly.
+**PXD066875**
+
+https://www.ebi.ac.uk/pride/archive/projects/PXD066875
+
+Processed data used by the application are included in this repository under:
+
+```text
+data/processed/
+```
 
 ---
 
-## Running locally
+## Webtool features
 
-### 1) Restore packages using renv
-From R:
+### Pathway Viewer
 
-```r
-renv::restore()
-```
+- Browse the Reactome pathway hierarchy using an interactive pathway tree.
+- Visualize significantly regulated proteins across tissues and timepoints using interactive bubble plots.
+- Adjust BH-adjusted P-value and absolute log2 fold-change thresholds.
 
-### 2) Run the Shiny app
-```r
-shiny::runApp("app")
-```
-Requires the processed data files in data/processed/ (see Data availability above).
+### Gene Viewer
+
+- Query one or more gene symbols (one per line).
+- Select tissues interactively.
+- Visualize estimated log2 fold changes across obesity and regression timepoints.
+- Profiles are shown relative to age-matched lean controls with ±1 SE.
 
 ---
 
-## Docker
-Build image
+## Study design
+
+Male mice were fed a high-fat diet (HFD) for 18 weeks to induce obesity and were subsequently switched to a low-fat diet (LFD) to induce weight loss.
+
+- **OBE** — after 18 weeks HFD, immediately before switching to LFD
+- **STR** — 2 weeks after switching to LFD
+- **MTR** — 6 weeks after switching to LFD
+- **LTR** — 12 weeks after switching to LFD
+
+Differential protein expression was estimated using robust ridge regression (MSqRob2), where each timepoint was compared against age-matched lean control mice maintained on LFD throughout.
+
+---
+
+## Run locally with R
+
+**Requirements**
+
+- R 4.5.2
+- renv
+
+From the project root:
+
 ```bash
-docker build -t proteomic-atlas-of-obesity .
+R -e "install.packages('renv', repos='https://cloud.r-project.org')"
+R -e "renv::restore(prompt = FALSE)"
+R -e "shiny::runApp('app', host = '0.0.0.0', port = 3838)"
 ```
-Run container:
+
+Then open:
+
+http://localhost:3838
+
+---
+
+## Run with Docker
+
+Pull the published Docker image:
+
 ```bash
-docker run --rm -p 3838:3838 proteomic-atlas-of-obesity
+docker pull felixboel/proteomic-atlas-of-obesity:latest
 ```
-Requires the processed data files in data/processed/ (see Data availability above).
+
+Run the container:
+
+```bash
+docker run --rm -p 3838:3838 felixboel/proteomic-atlas-of-obesity:latest
+```
+
+Then open:
+
+http://localhost:3838
+
+Versioned Docker images are available.
 
 ---
 
 ## Citation
-If you use this webtool or the underlying dataset, please cite:
 
-Boel F., et al. Multi-organ proteomic atlas of obesity regression in male mice. (Journal, Year) — DOI: TBD
+If you use this resource or the underlying dataset in academic work, please cite:
 
+**Boel, F. et al.** *Multi-organ proteomic atlas of obesity regression in male mice.* **Nature Metabolism** (2026).  
+https://doi.org/10.1038/s42255-026-01599-5
 
+---
 
+## License
 
-
-
+Released under the MIT License. See [LICENSE](LICENSE) for details.

@@ -1,10 +1,9 @@
 .DS_Store
 **/.DS_Store
 .Rhistory
+.RData
+.Rproj.user
 __MACOSX
-
-data/raw
-data/processed
 
 renv/library
 renv/staging

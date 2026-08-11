@@ -5,11 +5,6 @@ library(plotly)
 library(dplyr)
 library(tidyr)
 
-REVIEW_MODE <- Sys.getenv("REVIEW_MODE", "0") == "1"
-if (REVIEW_MODE) {
-  library(shinymanager)
-}
-
 source("R/config.R")
 source("R/data_load.R")
 source("R/helpers.R")
@@ -22,6 +17,7 @@ diff_expr <- app_data$diff_expr
 
 diff_expr$logFC <- as.numeric(diff_expr$logFC)
 diff_expr$adjPval <- as.numeric(diff_expr$adjPval)
+diff_expr$se <- as.numeric(diff_expr$se)
 diff_expr$Regulation <- ifelse(diff_expr$logFC > 0, "Up", "Down")
 
 all_tissues <- sort(unique(diff_expr$Tissue))
@@ -65,7 +61,7 @@ ui <- fluidPage(
       div(
         class = "hero-text",
         h1(APP_TITLE),
-        p("Explore tissue and time-specific proteomic shifts."),
+        p("Explore tissue and time-specific proteomic shifts during regression of obesity in male mice."),
         div(class = "version", paste0("App version ", APP_VERSION))
       )
     )
@@ -93,7 +89,7 @@ ui <- fluidPage(
           "input.view_mode == 'Pathway'",
           div(
             class = "card",
-            h3("Pathway tree"),
+            h3("Pathway Selector"),
             p("Select a pathway to render the bubble plot."),
             div(
               class = "tree-wrapper",
@@ -105,7 +101,7 @@ ui <- fluidPage(
           "input.view_mode == 'Gene'",
           div(
             class = "card",
-            h3("Gene list"),
+            h3("Gene List"),
             p("Enter one gene per line."),
             textAreaInput(
               "gene_input",
@@ -113,7 +109,8 @@ ui <- fluidPage(
               value = "",
               placeholder = "Psma1\nPsma3\nPsmb4",
               rows = 6
-            )
+            ),
+            p("Profiles show estimated log2 fold changes relative to age-matched lean controls with ±1 SE.")
           )
         ),
         conditionalPanel(
@@ -155,18 +152,39 @@ ui <- fluidPage(
     div(
       class = "footer-row",
       div(
-        class = "card cite",
-        h3("How to cite"),
-        p(CITATION_TEXT),
-        tags$a("View publication", href = PUBLICATION_URL, target = "_blank", rel = "noopener")
+        class = "card data",
+        h3("Study Design"),
+        p("Male mice were fed a high-fat diet (HFD) for 18 weeks to induce obesity. Obese mice were then switched to a low-fat diet (LFD) to induce weight loss, and profiled at:"),
+        p(tags$b("OBE"), " — after 18 weeks HFD, immediately before switching to LFD"),
+        p(tags$b("STR"), " — 2 weeks after switching to LFD"),
+        p(tags$b("MTR"), " — 6 weeks after switching to LFD"),
+        p(tags$b("LTR"), " — 12 weeks after switching to LFD"),
+        p("Differential protein expression was estimated using robust ridge regression (MSqRob2), with comparisons for each timepoint performed against age-matched lean control mice maintained on LFD throughout.")
       ),
       div(
-        class = "card data",
-        h3("Data access"),
-        p(DATA_ACCESS_PRIDE),
-        tags$a("View PRIDE", href = PRIDE_URL, target = "_blank", rel = "noopener"),
-        p(DATA_ACCESS_GITHUB),
-        tags$a("View github", href = GITHUB_URL, target = "_blank", rel = "noopener")
+        class = "card cite",
+        h3("Resources"),
+        p(tags$b("Publication and citation"), " — Boel, F. et al. Multi-organ proteomic atlas of obesity regression in male mice. Nature Metabolism (2026). DOI: 10.1038/s42255-026-01599-5."),
+        tags$a(
+          "View Publication",
+          href = PUBLICATION_URL,
+          target = "_blank",
+          rel = "noopener"
+        ),
+        p(tags$b("Raw proteomics data"), " — available via PRIDE under accession PXD066875."),
+        tags$a(
+          "View PRIDE",
+          href = PRIDE_URL,
+          target = "_blank",
+          rel = "noopener"
+        ),
+        p(tags$b("Processed data and source code"), " — available on GitHub at felixboel/proteomic-atlas-of-obesity."),
+        tags$a(
+          "View GitHub",
+          href = GITHUB_URL,
+          target = "_blank",
+          rel = "noopener"
+        )
       )
     )
   )
@@ -314,24 +332,4 @@ server <- function(input, output, session) {
   })
 }
 
-REVIEW_MODE <- Sys.getenv("REVIEW_MODE", "0") == "1"
-
-if (REVIEW_MODE) {
-  credentials <- data.frame(
-    user = Sys.getenv("REVIEW_USER", "username"),
-    password = Sys.getenv("REVIEW_PASS", "password"),
-    stringsAsFactors = FALSE
-  )
-  
-  ui_secure <- secure_app(ui)
-  
-  server_secure <- function(input, output, session) {
-    secure_server(check_credentials = check_credentials(credentials))
-    server(input, output, session)
-  }
-  
-  shinyApp(ui_secure, server_secure)
-  
-} else {
-  shinyApp(ui, server)
-}
+shinyApp(ui, server)

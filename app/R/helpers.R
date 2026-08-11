@@ -98,7 +98,7 @@ make_bubble_plot <- function(bubble_df) {
           group = Regulation,
           text = paste0(
             "<b>Tissue: </b>", Tissue, "\n",
-            "<b>Time: </b>", Time, "\n",
+            "<b>Time: </b>", dplyr::recode(as.character(Time), "Ob" = "OBE"), "\n",
             "<b>Regulation: </b>", Regulation, "\n",
             "<b>Count: </b>", Count, "\n",
             "<b>Genes: </b>", Genes, "\n"
@@ -108,7 +108,7 @@ make_bubble_plot <- function(bubble_df) {
         alpha = 0.9,
         shape = 16
       ) +
-      ggplot2::scale_x_discrete(drop = FALSE) +
+      ggplot2::scale_x_discrete(drop = FALSE, labels = c("Ob" = "OBE", "STR" = "STR", "MTR" = "MTR", "LTR" = "LTR")) +
       ggplot2::scale_y_discrete(drop = FALSE) +
       ggplot2::scale_color_manual(values = c("Up" = "#E64B35", "Down" = "#2C7FB8")) +
       ggplot2::scale_size(range = c(1, 10), breaks = pretty) +
@@ -135,9 +135,31 @@ make_gene_plot <- function(plot_df, tissue_colors) {
   plot_df$Tissue <- factor(plot_df$Tissue, levels = names(tissue_colors))
 
   p <- ggplot2::ggplot(plot_df) +
-    ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "lightgrey", linewidth = 0.5) +
+    ggplot2::geom_hline(
+      yintercept = 0,
+      linetype = "dashed",
+      color = "lightgrey",
+      linewidth = 0.5
+    ) +
+    ggplot2::geom_errorbar(
+      ggplot2::aes(
+        x = Time,
+        ymin = logFC - se,
+        ymax = logFC + se,
+        group = Tissue,
+        color = Tissue
+      ),
+      width = 0.12,
+      linewidth = 0.45,
+      alpha = 0.8
+    ) +
     ggplot2::geom_line(
-      ggplot2::aes(x = Time, y = logFC, group = Tissue, color = Tissue),
+      ggplot2::aes(
+        x = Time,
+        y = logFC,
+        group = Tissue,
+        color = Tissue
+      ),
       alpha = 1,
       linewidth = 0.7
     ) +
@@ -153,6 +175,7 @@ make_gene_plot <- function(plot_df, tissue_colors) {
       plot.margin = ggplot2::margin(0,0,0,0)
     ) +
     ggplot2::scale_color_manual(values = tissue_colors) +
+    ggplot2::scale_x_discrete(drop = FALSE, labels = c("Ob" = "OBE", "STR" = "STR", "MTR" = "MTR", "LTR" = "LTR")) +
     ggplot2::facet_wrap(~PG.Genes, ncol = 2) +
     ggplot2::labs(x = NULL, y = NULL)
 
@@ -169,6 +192,7 @@ make_gene_plot <- function(plot_df, tissue_colors) {
       if (is.numeric(trace$x)) {
         time_index <- pmax(1, pmin(length(time_levels), round(trace$x)))
         time_labels <- time_levels[time_index]
+        time_labels[time_labels == "Ob"] <- "OBE"
       } else {
         time_labels <- as.character(trace$x)
       }
